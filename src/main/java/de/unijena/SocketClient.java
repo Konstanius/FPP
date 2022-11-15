@@ -92,7 +92,7 @@ public abstract class SocketClient {
         System.out.println("\u001B[34mEnter your password ('password'): \u001B[0m");
         String password;
         while (true) {
-            password = new String(System.console().readPassword());
+            password = scanner.nextLine();
 
             // if user doesnt enter a password he has to try again until he does
             if (password.isEmpty()) {
