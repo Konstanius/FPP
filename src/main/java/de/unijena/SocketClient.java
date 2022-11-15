@@ -206,7 +206,6 @@ public abstract class SocketClient {
         public void connect(String host, int port) throws Exception {
 
             if (ssl) {
-                // Konstantin gib mir info hierzu bitte
                 // creates socket with deafult parameters
                 SSLSocketFactory factory = (SSLSocketFactory) SSLSocketFactory.getDefault();
                 sslSocket = (SSLSocket) factory.createSocket(host, port);
@@ -216,12 +215,11 @@ public abstract class SocketClient {
                 writer = new PrintWriter(sslSocket.getOutputStream(), true);
             } else {
                 socket = new Socket(host, port);
-                // socket. setKeepAlive(true);
+                socket.setKeepAlive(true);
                 // reads the chars or bytes or whatever, sent from the server and translates them into strings
                 reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                 // sends commands to the server; autoflush automatically clears (flushes) the data
                 writer = new PrintWriter(socket.getOutputStream(), true);
-                // reads the stuff that the server sends
             }
             line = reader.readLine();
         }
