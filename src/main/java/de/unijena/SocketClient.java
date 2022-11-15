@@ -55,7 +55,7 @@ public abstract class SocketClient {
         int port;
         while (true) {
             String portNumber = scanner.nextLine();
-            if (portNumber.isBlank()) {
+            if (portNumber.isEmpty()) {
                 if (ssl) {
                     port = 995;
                 } else {
@@ -77,7 +77,7 @@ public abstract class SocketClient {
         while (true) {
             email = scanner.nextLine();
 
-            if (email.isBlank()) {
+            if (email.isEmpty()) {
                 System.out.println("\u001B[31mNo email entered, please try again!\u001B[0m");
             }
 
@@ -95,7 +95,7 @@ public abstract class SocketClient {
             password = new String(System.console().readPassword());
 
             // if user doesnt enter a password he has to try again until he does
-            if (password.isBlank()) {
+            if (password.isEmpty()) {
                 System.out.println("\u001B[31mNo password entered, please try again!\u001B[0m");
             } else {
                 break;
@@ -291,7 +291,7 @@ public abstract class SocketClient {
 
                 System.out.print("\u001B[34mDate: " + date + ", \u001B[0m");
                 System.out.println("\u001B[34mSubject: " + decypher(subject.toString()) + "\u001B[0m");
-                System.out.println("\u001B[32m========================================\u001B[0m");
+                System.out.println();
             }
             System.out.println("\u001B[32m========================================\u001B[0m");
         }
@@ -406,7 +406,7 @@ public abstract class SocketClient {
                     String split = splits[i];
                     try {
                         // If the split is blank, skip current iteration of the loop
-                        if (split.isBlank()) {
+                        if (split.isEmpty()) {
                             continue;
                         }
 

@@ -50,7 +50,7 @@ public abstract class JavaMailClient {
         int port;
         while (true) {
             String portNumber = scanner.nextLine();
-            if (portNumber.isBlank()) {
+            if (portNumber.isEmpty()) {
                 if (ssl) {
                     port = 995;
                 } else {
@@ -72,7 +72,7 @@ public abstract class JavaMailClient {
         while (true) {
             email = scanner.nextLine();
 
-            if (email.isBlank()) {
+            if (email.isEmpty()) {
                 System.out.println("\u001B[31mNo email entered, please try again!\u001B[0m");
             }
 
@@ -90,7 +90,7 @@ public abstract class JavaMailClient {
             password = new String(System.console().readPassword());
 
             // if user doesnt enter a password he has to try again until he does
-            if (password.isBlank()) {
+            if (password.isEmpty()) {
                 System.out.println("\u001B[31mNo password entered, please try again!\u001B[0m");
             } else {
                 break;
@@ -249,7 +249,8 @@ public abstract class JavaMailClient {
                         System.out.println("\u001B[32mSubject: " + messages[index].getSubject() + "\u001B[0m");
                         System.out.println("\u001B[34m======================== Text =============================\u001B[0m");
                         // multipart is a container that holds multiple bodyparts
-                        if (messages[index].getContent() instanceof MimeMultipart mimeMultipart) {
+                        if (messages[index].getContent() instanceof MimeMultipart) {
+                            MimeMultipart mimeMultipart = (MimeMultipart) messages[index].getContent();
                             // print all bodyparts
                             for (int i = 0; i < mimeMultipart.getCount(); i++) {
                                 BodyPart bodyPart = mimeMultipart.getBodyPart(i);
