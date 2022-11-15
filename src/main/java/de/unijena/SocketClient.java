@@ -21,7 +21,7 @@ public abstract class SocketClient {
             host = scanner.nextLine();
 
             // i was too lazy to type it every time
-            if (host.equals("")) {
+            if (host.isEmpty()) {
                 host = "pop3.uni-jena.de";
                 break;
             }
@@ -37,7 +37,7 @@ public abstract class SocketClient {
         boolean ssl = false;
         System.out.println("\u001B[34mDo you want to connect to the server with SSL? ('yes' or 'no'): \u001B[0m");
         while (true) {
-            String answer = scanner.nextLine();
+            String answer = scanner.nextLine().toLowerCase();
 
             // == doesnt work so i used equals
             if (answer.equals("yes")) {
@@ -76,10 +76,6 @@ public abstract class SocketClient {
         String email;
         while (true) {
             email = scanner.nextLine();
-
-            if (email.isEmpty()) {
-                System.out.println("\u001B[31mNo email entered, please try again!\u001B[0m");
-            }
 
             if (email.contains("@")) {
                 break;
@@ -125,7 +121,7 @@ public abstract class SocketClient {
         // Listen for commands from the user
         while (true) {
             System.out.println("\u001B[34mEnter the number of the message you want to read, the range of messages you want to show (Ex.: '10-20') or 'close' to exit: \u001B[0m");
-            String command = scanner.nextLine();
+            String command = scanner.nextLine().replace(" ", "");
 
             // Check if the command is "close"
             if (command.equalsIgnoreCase("close")) {
@@ -156,7 +152,7 @@ public abstract class SocketClient {
                 try {
                     int messageNumber = Integer.parseInt(command);
 
-                    if (messageNumber < 0 || messageNumber > totalAmount) {
+                    if (messageNumber <= 0 || messageNumber > totalAmount) {
                         System.out.println("\u001B[31mNo valid message number, please try again or type 'close' to exit\u001B[0m");
                         System.out.println("\u001B[32m========================================\u001B[0m");
                     } else {
@@ -233,12 +229,6 @@ public abstract class SocketClient {
         }
 
         public void printAllMessages(int firstNumber, int lastNumber) throws IOException {
-
-            // Returns: +OK <number of messages> <total size of messages>
-            writer.println("STAT");
-            line = reader.readLine();
-            // numberOfMessages = Integer.parseInt(line.split(" ")[1]);
-
             System.out.println("\u001B[32m========================================\u001B[0m");
             System.out.println();
             for (int i = firstNumber; i <= lastNumber; i++) {
@@ -263,20 +253,20 @@ public abstract class SocketClient {
                         foundDate = true;
                     }
 
-                    if (line.startsWith("Subject: ") && !foundSubject) {
+                    if (line.toLowerCase().startsWith("subject: ") && !foundSubject) {
                         subject = new StringBuilder(line.substring(9));
                         foundSubject = true;
 
                         // while the line starts with " " it still belongs to the subject
                         do {
                             line = reader.readLine();
-                            if (line.startsWith(" ")) {
-                                // If the line starts with " " remove the " " and append it to the rest of the subject
+                            if (line.startsWith("\t")) {
+                                // If the line starts with tab remove it and append it to the rest of the subject
                                 subject.append(line.substring(1));
                             }
                         }
-                        // If the next line starts with "Subject: ", read the next line
-                        while (line.startsWith(" "));
+                        // If the next line starts with "subject: ", read the next line
+                        while (line.startsWith("\t"));
                         // Continue so that the next line isnt skipped
                         continue;
                     }
@@ -315,6 +305,7 @@ public abstract class SocketClient {
             StringBuilder text = new StringBuilder();
 
             boolean startBody = false;
+            line = reader.readLine();
             while (true) {
 
                 String newLine = new String(reader.readLine().getBytes(StandardCharsets.UTF_8), StandardCharsets.UTF_8);
@@ -328,8 +319,16 @@ public abstract class SocketClient {
                 if (startBody) {
                     if (newLine.toLowerCase().startsWith("content-type: ") && !newLine.toLowerCase().startsWith("content-type: text/")) {
                         // If the content-type is not text/plain, skip the rest
+                        boolean fullBreak = false;
                         while (!newLine.equals("content-type:")) {
                             newLine = reader.readLine();
+                            if (newLine.equals(".")) {
+                                fullBreak = true;
+                                break;
+                            }
+                        }
+                        if (fullBreak) {
+                            break;
                         }
                     }
                     text.append(newLine).append("\n");
@@ -344,7 +343,6 @@ public abstract class SocketClient {
                     } else if (line.equals(".")) {
                         break;
                     }
-
 
                     if (line.toLowerCase().startsWith("from: ")) {
                         // removes "from: "
@@ -481,7 +479,7 @@ public abstract class SocketClient {
                 writer.close();
                 reader.close();
                 socket.close();
-            } catch (IOException ignored) {
+            } catch (Exception ignored) {
             }
         }
     }

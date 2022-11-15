@@ -16,7 +16,7 @@ public abstract class JavaMailClient {
             host = scanner.nextLine();
 
             // i was too lazy to type it every time
-            if (host.equals("")) {
+            if (host.isEmpty()) {
                 host = "pop3.uni-jena.de";
                 break;
             }
@@ -32,7 +32,7 @@ public abstract class JavaMailClient {
         boolean ssl = false;
         System.out.println("\u001B[34mDo you want to connect to the server with SSL? ('yes' or 'no'): \u001B[0m");
         while (true) {
-            String answer = scanner.nextLine();
+            String answer = scanner.nextLine().toLowerCase();
 
             // == doesnt work so i used equals
             if (answer.equals("yes")) {
@@ -71,10 +71,6 @@ public abstract class JavaMailClient {
         String email;
         while (true) {
             email = scanner.nextLine();
-
-            if (email.isEmpty()) {
-                System.out.println("\u001B[31mNo email entered, please try again!\u001B[0m");
-            }
 
             if (email.contains("@")) {
                 break;
@@ -162,7 +158,7 @@ public abstract class JavaMailClient {
         while (true) {
             System.out.println("\u001B[34mEnter the number of the message you want to read, the range of messages you want to show (Ex.: '10-20') or 'close' to exit: \u001B[0m");
 
-            String command = scanner.nextLine();
+            String command = scanner.nextLine().toLowerCase();
 
             if (command.equalsIgnoreCase("close")) {
                 System.out.println("\u001B[34m================================================================================\u001B[0m");
