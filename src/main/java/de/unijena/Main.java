@@ -1,12 +1,11 @@
-package de.uni-jena;
+package de.unijena;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
 //interface whose implementation runs the main funciton of the reader/writer file
-interface command
-{
+interface command {
     void runCommand();
 }
 
@@ -14,34 +13,24 @@ interface command
 public abstract class Main {
     public static void main(String[] args) throws Exception {
         // Create a map of all available commands map<key, data>
-        Map<String, command> commands = new HashMap<String, command>();
-        commands.put("Socket", new command()
-        {
-            public void runCommand()
-            {
-                try
-                {
+        Map<String, command> commands = new HashMap<>();
+        commands.put("Socket", new command() {
+            public void runCommand() {
+                try {
                     SocketClient.main();
-                }
-                catch (Exception e)
-                {
+                } catch (Exception e) {
                     System.out.println("An exception occured as shown below:");
                     //shows line numbers and class names of the exception
                     e.printStackTrace();
                 }
             }
         });
-        commands.put("JavaMail", new command()
-        {
+        commands.put("JavaMail", new command() {
 
-            public void runCommand()
-            {
-                try
-                {
+            public void runCommand() {
+                try {
                     JavaMailClient.main();
-                }
-                catch (Exception e)
-                {
+                } catch (Exception e) {
                     System.out.println("An exception occured as shown below:");
                     //shows line numbers and class names of the exception
                     e.printStackTrace();
@@ -60,13 +49,10 @@ public abstract class Main {
 
 
         //input is available in hashmap
-        if(commands.containsKey(input) == true)
-        {
+        if (commands.containsKey(input)) {
             //get returns the data that is linked to input --> basically it reads command.runCommand
             commands.get(input).runCommand();
-        }
-        else
-        {
+        } else {
             System.out.println("The command " + input + " is unknown!");
         }
         scanner.close();

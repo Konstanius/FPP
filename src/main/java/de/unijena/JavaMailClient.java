@@ -1,7 +1,4 @@
-//the arraysize doesnt work correct, add or remove 1 from indexes
-
-
-package email;
+package de.unijena;
 
 import com.sun.mail.pop3.POP3SSLStore;
 
@@ -11,28 +8,23 @@ import java.util.Scanner;
 
 public abstract class JavaMailClient {
 
-    public static void main() throws Exception
-    {
+    public static void main() throws Exception {
         System.out.println("Enter the host you want to connect to ('pop3.uni-jena.de'): ");
         String host;
         Scanner scanner = new Scanner(System.in);
-        while (true)
-        {
+        while (true) {
             host = scanner.nextLine();
 
             //i was too lazy to type it every time
-            if (host.equals(""))
-            {
+            if (host.equals("")) {
                 host = "pop3.uni-jena.de";
                 break;
             }
-            if (host.contains(" "))
-            {
+            if (host.contains(" ")) {
                 System.out.println("Host cannot contain spaces!");
             }
             //user typed a valid server name (syntaxwise)
-            else
-            {
+            else {
                 break;
             }
         }
@@ -41,23 +33,17 @@ public abstract class JavaMailClient {
         boolean ssl = false;
         System.out.println("Do you want to connect to the server with SSL? [yes]/[no]");
 
-        while(true)
-        {
+        while (true) {
             String answer = scanner.nextLine();
 
             //== doesnt work so i used equals
-            if(answer.equals("yes"))
-            {
+            if (answer.equals("yes")) {
                 ssl = true;
                 break;
-            }
-            else if(answer.equals("no"))
-            {
+            } else if (answer.equals("no")) {
                 ssl = false;
                 break;
-            }
-            else
-            {
+            } else {
                 System.out.println("No valid input, please try again!");
             }
         }
@@ -65,30 +51,21 @@ public abstract class JavaMailClient {
 
         System.out.println("Enter the port you want to connect to [995]/[110]: ");
         int port;
-        while (true)
-        {
+        while (true) {
             String portNumber = scanner.nextLine();
-            if(portNumber == "")
-            {
-                if(ssl == true)
-                {
+            if (portNumber == "") {
+                if (ssl) {
                     port = 995;
                     break;
-                }
-                else
-                {
+                } else {
                     port = 110;
                     break;
                 }
             }
-            try
-            {
-                port=Integer.parseInt(portNumber);
+            try {
+                port = Integer.parseInt(portNumber);
                 break;
-            }
-
-            catch(NumberFormatException e)
-            {
+            } catch (NumberFormatException e) {
                 System.out.println("Only numbers are valid inputs. Try again!");
 
             }
@@ -97,42 +74,33 @@ public abstract class JavaMailClient {
 
         System.out.println("Enter your email adress ('max.mustermensch@uni-jena.de'): ");
         String email;
-        while (true)
-        {
+        while (true) {
             email = scanner.nextLine();
 
-            if(email.equals(""))
-            {
+            if (email.equals("")) {
                 email = "patrick.stahl@uni-jena.de";
                 break;
             }
 
-            if(email.contains("@"))
-            {
+            if (email.contains("@")) {
                 break;
-            }
-            else
-            {
+            } else {
                 System.out.println("No valid email entered! (max.mustermensch@uni-jena.de)");
             }
         }
 
         System.out.println("Enter your password ('password'): ");
         String password;
-        while (true)
-        {
+        while (true) {
             password = scanner.nextLine();
 
-            if (password.equals(""))
-            {
+            if (password.equals("")) {
 
                 password = "";
                 break;
 
                 //System.out.println("No password entered! Please enter your password: ");
-            }
-            else
-            {
+            } else {
                 break;
             }
         }
@@ -145,8 +113,7 @@ public abstract class JavaMailClient {
         properties.setProperty("mail.pop3.port", String.valueOf(port));
 
         //if user wants ssl another property is added
-        if (ssl == true)
-        {
+        if (ssl) {
             properties.setProperty("mail.pop3.ssl.enable", "true");
         }
 
@@ -156,34 +123,25 @@ public abstract class JavaMailClient {
         //Create (SSL)Store object to store and retrieve messages
         POP3SSLStore sslStore = null;
         Store store = null;
-        if (ssl == true)
-        {
+        if (ssl) {
             sslStore = new POP3SSLStore(session, null);
-        }
-        else
-        {
+        } else {
             store = session.getStore("pop3");
             //store = new POP3SSLStore(session, null);
         }
 
         //connect to server
-        if (ssl == true)
-        {
+        if (ssl) {
             sslStore.connect(host, port, email, password);
-        }
-        else
-        {
+        } else {
             store.connect(host, port, email, password);
         }
 
         //get the inbox folder (where messages are stored)
         Folder inbox;
-        if(ssl == true)
-        {
+        if (ssl) {
             inbox = sslStore.getFolder("INBOX");
-        }
-        else
-        {
+        } else {
             inbox = store.getFolder("INBOX");
         }
 
@@ -198,9 +156,8 @@ public abstract class JavaMailClient {
         System.out.println("================================================================================");
         //gets date and subject of all messages
         //i < messages.length
-        for (int i = 0; i < 5; i++)
-        {
-            System.out.println("[" + (i+1) + "] Date: " + messages[i].getSentDate() + ", Subject: " + messages[i].getSubject());
+        for (int i = 0; i < 5; i++) {
+            System.out.println("[" + (i + 1) + "] Date: " + messages[i].getSentDate() + ", Subject: " + messages[i].getSubject());
             System.out.println();
         }
         System.out.println("================================================================================");
@@ -208,81 +165,57 @@ public abstract class JavaMailClient {
 
 
         //user can choose whether to close the program or to display a specific message
-        while (true)
-        {
+        while (true) {
             System.out.println("Enter the number of the message you want to read or close to exit: ");
 
             String command = scanner.nextLine();
 
-            if (command.equals("close"))
-            {
+            if (command.equals("close")) {
                 System.out.println("================================================================================");
                 break;
-            }
-            else
-            {
+            } else {
                 //catch inputs that arent numbers or "close"
-                try
-                {
+                try {
                     int index = Integer.parseInt(command);
                     index--;
 
                     //out of bounds exception
-                    if (index < 0 || index >= messages.length)
-                    {
+                    if (index < 0 || index >= messages.length) {
                         System.out.println("Invalid index. Please enter a valid index or 'close' to exit: ");
                         System.out.println("================================================================================");
-                    }
-                    else
-                    {
+                    } else {
                         String receiver = "";
-                        try
-                        {
-                            for(int i = 0; i < messages[index].getAllRecipients().length; i++)
-                            {
+                        try {
+                            for (int i = 0; i < messages[index].getAllRecipients().length; i++) {
                                 String receiverTemp = messages[index].getAllRecipients()[i].toString();
-                                if(receiverTemp.contains("<"))
-                                {
-                                    receiverTemp = receiverTemp.substring(receiverTemp.indexOf("<") + 1,  receiverTemp.indexOf(">"));
+                                if (receiverTemp.contains("<")) {
+                                    receiverTemp = receiverTemp.substring(receiverTemp.indexOf("<") + 1, receiverTemp.indexOf(">"));
                                 }
-                                if(i == 0)
-                                {
+                                if (i == 0) {
                                     receiver = receiverTemp;
-                                }
-                                else
-                                {
+                                } else {
                                     receiver = receiver + ", " + receiverTemp;
                                 }
                             }
-                        }
-                        catch(NullPointerException e)
-                        {
+                        } catch (NullPointerException e) {
 
                         }
 
 
                         //String sender = messages[index].getFrom()[0].toString();
                         String sender = "";
-                        for(int i = 0; i <= messages[index].getFrom().length-1; i++)
-                        {
-                            try
-                            {
+                        for (int i = 0; i <= messages[index].getFrom().length - 1; i++) {
+                            try {
                                 String senderTemp = messages[index].getFrom()[i].toString();
-                                if (senderTemp.toString().contains("<"))
-                                {
+                                if (senderTemp.contains("<")) {
                                     senderTemp = senderTemp.substring(sender.indexOf("<") + 1, sender.indexOf(">"));
                                 }
-                                if(i == 0)
-                                {
+                                if (i == 0) {
                                     sender = senderTemp;
-                                }
-                                else
-                                {
+                                } else {
                                     sender = sender + ", " + senderTemp;
                                 }
-                            }
-                            catch(StringIndexOutOfBoundsException e)
-                            {
+                            } catch (StringIndexOutOfBoundsException e) {
                                 e.printStackTrace();
                             }
                         }
@@ -294,24 +227,20 @@ public abstract class JavaMailClient {
                         System.out.println("Subject: " + messages[index].getSubject());
                         System.out.println("======================== Text =============================");
                         //multipart is a container that holds multiple bodyparts
-                        if (messages[index].getContent() instanceof MimeMultipart mimeMultipart)
-                        {
+                        if (messages[index].getContent() instanceof MimeMultipart mimeMultipart) {
                             //print all bodyparts
-                            for (int i = 0; i < mimeMultipart.getCount(); i++)
-                            {
+                            for (int i = 0; i < mimeMultipart.getCount(); i++) {
                                 BodyPart bodyPart = mimeMultipart.getBodyPart(i);
                                 System.out.println(bodyPart.getContent());
                             }
                         }
                         //if the mail is not splitted into parts
-                        else
-                        {
+                        else {
                             System.out.println(messages[index].getContent());
                         }
                         System.out.println("================================================================================");
                     }
-                }
-                catch (NumberFormatException e) {
+                } catch (NumberFormatException e) {
                     System.out.println("Invalid input!");
                     System.out.println("================================================================================");
                 }
@@ -326,12 +255,9 @@ public abstract class JavaMailClient {
         inbox.close(false);
 
         // Close the connection to the server
-        if (ssl == true)
-        {
+        if (ssl) {
             sslStore.close();
-        }
-        else
-        {
+        } else {
             store.close();
         }
     }
