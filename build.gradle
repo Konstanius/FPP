@@ -1,12 +1,18 @@
 plugins {
     id 'java'
+    id 'application'
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
 }
 
-group 'de.uni-jena'
-version '1.0-SNAPSHOT'
+group 'de.unijena'
+version '1.0'
 
 repositories {
     mavenCentral()
+}
+
+application {
+    mainClass.set('de.unijena.Main')
 }
 
 dependencies {
@@ -14,6 +20,12 @@ dependencies {
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.0'
     implementation 'com.sun.mail:javax.mail:1.6.2'
     implementation 'com.sun.activation:javax.activation:1.2.0'
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'de.unijena.Main'
+    }
 }
 
 test {
