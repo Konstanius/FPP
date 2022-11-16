@@ -88,7 +88,7 @@ public abstract class SocketClient {
         System.out.println("\u001B[34mEnter your password ('password'): \u001B[0m");
         String password;
         while (true) {
-            password = scanner.nextLine();
+            password = new String(System.console().readPassword());
 
             // if user doesnt enter a password he has to try again until he does
             if (password.isEmpty()) {
@@ -226,6 +226,10 @@ public abstract class SocketClient {
             line = reader.readLine();
             writer.println("PASS " + password);
             line = reader.readLine();
+            if (line.startsWith("-ERR")) {
+                System.out.println("\u001B[31mAuthentication failed, please try again!\u001B[0m");
+                System.exit(0);
+            }
         }
 
         public void printAllMessages(int firstNumber, int lastNumber) throws IOException {

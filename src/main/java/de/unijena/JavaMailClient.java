@@ -83,7 +83,7 @@ public abstract class JavaMailClient {
         System.out.println("\u001B[34mEnter your password ('password'): \u001B[0m");
         String password;
         while (true) {
-            password = scanner.nextLine();
+            password = new String(System.console().readPassword());
 
             // if user doesnt enter a password he has to try again until he does
             if (password.isEmpty()) {
@@ -115,7 +115,6 @@ public abstract class JavaMailClient {
             sslStore = new POP3SSLStore(session, null);
         } else {
             store = session.getStore("pop3");
-            // store = new POP3SSLStore(session, null);
         }
 
         // connect to server
@@ -203,7 +202,7 @@ public abstract class JavaMailClient {
                         System.out.println("\u001B[31mInvalid index. Please enter a valid index or 'close' to exit: \u001B[0m");
                         System.out.println("\u001B[34m================================================================================\u001B[0m");
                     } else {
-                        String receiver = "";
+                        StringBuilder receivers = new StringBuilder();
                         try {
                             for (int i = 0; i < messages[index].getAllRecipients().length; i++) {
                                 String receiverTemp = messages[index].getAllRecipients()[i].toString();
@@ -211,9 +210,9 @@ public abstract class JavaMailClient {
                                     receiverTemp = receiverTemp.substring(receiverTemp.indexOf("<") + 1, receiverTemp.indexOf(">"));
                                 }
                                 if (i == 0) {
-                                    receiver = receiverTemp;
+                                    receivers = new StringBuilder(receiverTemp);
                                 } else {
-                                    receiver = receiver + ", " + receiverTemp;
+                                    receivers.append(", ").append(receiverTemp);
                                 }
                             }
                         } catch (NullPointerException ignored) {
@@ -221,7 +220,7 @@ public abstract class JavaMailClient {
 
 
                         // String sender = messages[index].getFrom()[0].toString();
-                        String sender = "";
+                        StringBuilder sender = new StringBuilder();
                         for (int i = 0; i <= messages[index].getFrom().length - 1; i++) {
                             try {
                                 String senderTemp = messages[index].getFrom()[i].toString();
@@ -229,19 +228,19 @@ public abstract class JavaMailClient {
                                     senderTemp = senderTemp.substring(sender.indexOf("<") + 1, sender.indexOf(">"));
                                 }
                                 if (i == 0) {
-                                    sender = senderTemp;
+                                    sender = new StringBuilder(senderTemp);
                                 } else {
-                                    sender = sender + ", " + senderTemp;
+                                    sender.append(", ").append(senderTemp);
                                 }
                             } catch (StringIndexOutOfBoundsException e) {
-                                sender = messages[index].getFrom()[i].toString();
+                                sender = new StringBuilder(messages[index].getFrom()[i].toString());
                             }
                         }
 
                         System.out.println("\u001B[34m================================================================================\u001B[0m");
                         System.out.println("\u001B[32mDate: " + messages[index].getSentDate() + "\u001B[0m");
                         System.out.println("\u001B[32mSender: " + sender + "\u001B[0m");
-                        System.out.println("\u001B[32mReceiver: " + receiver + "\u001B[0m");
+                        System.out.println("\u001B[32mReceiver: " + receivers + "\u001B[0m");
                         System.out.println("\u001B[32mSubject: " + messages[index].getSubject() + "\u001B[0m");
                         System.out.println("\u001B[34m======================== Text =============================\u001B[0m");
                         // multipart is a container that holds multiple bodyparts
@@ -265,7 +264,6 @@ public abstract class JavaMailClient {
                 }
             }
         }
-
 
         scanner.close();
         System.out.println("\u001B[31mClosing connection...\u001B[0m");
